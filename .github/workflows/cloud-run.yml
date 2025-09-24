@@ -1,0 +1,36 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-service:$GITHUB_SHA
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+      - name: Deploy to Cloud Run (no traffic)
+        run: |
+          IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-service:$GITHUB_SHA
+          gcloud run deploy my-service \
+            --image $IMAGE_NAME \
+            --region us-central1 \
+            --platform managed \
+            --no-traffic \
+            --set-env-vars VERSION=$GITHUB_SHA
