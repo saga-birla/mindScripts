@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-VERSION = os.getenv("VERSION", "undefined")
+VERSION = os.getenv("VERSION", "undefine")
 
 @app.route("/health")
 def health():
