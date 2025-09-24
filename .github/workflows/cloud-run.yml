@@ -28,18 +28,18 @@ jobs:
       # 4. Configure Docker for Artifact Registry
       - name: Configure Docker for Artifact Registry
         run: |
-          gcloud auth configure-docker <LOCATION>-docker.pkg.dev
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       # 5. Build Docker image
       - name: Build Docker image
         run: |
-          IMAGE_NAME=<LOCATION>-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-service:$GITHUB_SHA
+          IMAGE_NAME=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-service:$GITHUB_SHA
           docker build -t $IMAGE_NAME .
 
       # 6. Push Docker image
       - name: Push Docker image
         run: |
-          IMAGE_NAME=<LOCATION>-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-service:$GITHUB_SHA
+          IMAGE_NAME=us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/my-repo/my-service:$GITHUB_SHA
           docker push $IMAGE_NAME
 
       # 7. Deploy to Cloud Run
